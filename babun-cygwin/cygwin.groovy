@@ -72,6 +72,7 @@ def installCygwin(File cygwinInstaller, File repoFolder, File cygwinFolder, File
     String pkgs = pkgsFile.text.trim().replaceAll("(\\s)+", ",")    
     println "Packages to install: ${pkgs}"
     String installCommand = "\"${cygwinInstaller.absolutePath}\" " +
+            "--no-admin " +
             "--quiet-mode " +
             "--local-install " +
             "--local-package-dir \"${repoFolder.absolutePath}\" " +

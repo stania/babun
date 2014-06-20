@@ -2,6 +2,9 @@
 import static java.lang.System.*
 import static groovy.io.FileType.*
 
+wget = "C:\\Dropbox\\Utilities\\unxutils\\wget.exe"
+wget = "wget.exe"
+
 execute()
 
 def execute() {
@@ -42,7 +45,7 @@ def downloadPackages(File confFolder, File outputFolder, String bitVersion) {
         String setupIni = downloadSetupIni(repo, bitVersion, outputFolder)
         for (String rootPkg : rootPackages) {
             if (processed.contains(rootPkg.trim())) continue
-            def processedInStep = downloadRootPackage(repo, setupIni, rootPkg.trim(), processed, outputFolder)
+            def processedInStep = downloadRootPackage(repo, setupIni, rootPkg.trim(), processed, outputFolder, bitVersion)
             processed.addAll(processedInStep)
         }
         rootPackages.removeAll(processed)
@@ -57,7 +60,7 @@ def downloadPackages(File confFolder, File outputFolder, String bitVersion) {
 def downloadSetupIni(String repository, String bitVersion, File outputFolder) {
     println "Downloading [setup.ini] from repository [${repository}]"
     String setupIniUrl = "${repository}/${bitVersion}/setup.ini"
-    String downloadSetupIni = "wget -l 2 -r -np -q --cut-dirs=3 -P " + outputFolder.getAbsolutePath() + " " + setupIniUrl    
+    String downloadSetupIni = wget + " -l 2 -r -np -q --cut-dirs=1 -P " + outputFolder.getAbsolutePath() + " " + setupIniUrl    
     executeCmd(downloadSetupIni, 5)
     String setupIniContent = setupIniUrl.toURL().text
     // adjustSetupVersion(outputFolder, setupVersion)
@@ -78,7 +81,7 @@ def adjustSetupVersion(File outputFolder, String newSetupVersion) {
 }
 
 
-def downloadRootPackage(String repo, String setupIni, String rootPkg, Set<String> processed, File outputFolder) {
+def downloadRootPackage(String repo, String setupIni, String rootPkg, Set<String> processed, File outputFolder, String bitVersion) {
     def processedInStep = [] as Set
     println "Processing top-level package [$rootPkg]"
     def packagesToProcess = [] as Set
@@ -90,7 +93,7 @@ def downloadRootPackage(String repo, String setupIni, String rootPkg, Set<String
             String pkgPath = parsePackagePath(pkgInfo)
             if (pkgPath) {
                 println "  Downloading package [$pkg]"
-                if (downloadPackage(repo, pkgPath, outputFolder)) {
+                if (downloadPackage(repo, pkgPath, outputFolder, bitVersion)) {
                     processedInStep.add(pkg)
                 }
             } else if (pkgInfo) {
@@ -139,9 +142,10 @@ def parsePackagePath(String pkgInfo) {
     return tokens?.length > 0 ? tokens[0] : null
 }
 
-def downloadPackage(String repositoryUrl, String packagePath, File outputFolder) {
+def downloadPackage(String repositoryUrl, String packagePath, File outputFolder, String bitVersion) {
     String packageUrl = repositoryUrl + packagePath
-    String downloadCommand = "wget -l 2 -r -np -q --cut-dirs=3 -P " + outputFolder.getAbsolutePath() + " " + packageUrl
+
+    String downloadCommand = wget + " -l 2 -r -np -q --cut-dirs=1 -P " + outputFolder.getAbsolutePath() + " " + packageUrl
     if (executeCmd(downloadCommand, 5) != 0) {
         println "Could not download " + packageUrl
         return false
@@ -150,7 +154,9 @@ def downloadPackage(String repositoryUrl, String packagePath, File outputFolder)
 }
 
 int executeCmd(String command, int timeout) {
-    def process = command.execute()
+	split = command.tokenize(' ')
+	ProcessBuilder processBuilder = new ProcessBuilder(split)
+	Process process = processBuilder.start()
     addShutdownHook { process.destroy() }
     process.consumeProcessOutput(out, err)
     process.waitForOrKill(timeout * 60000)
