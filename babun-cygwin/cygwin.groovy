@@ -47,7 +47,7 @@ def initEnvironment() {
     File cygwinFolder = new File(outputFolder, "cygwin")
     if(cygwinFolder.exists()) {
         println "Skipping Cygwin installation"
-        return 
+		return [repoFolder, inputFolder, outputFolder, cygwinFolder, pkgsFile, downloadOnly]
     }
     cygwinFolder.mkdir()
     return [repoFolder, inputFolder, outputFolder, cygwinFolder, pkgsFile, downloadOnly]
