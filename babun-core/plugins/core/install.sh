@@ -11,7 +11,7 @@ installed_version=$(echo "$1" || echo "0")
 /bin/cp -rf $src/babun /usr/local/bin
 chmod 755 /usr/local/bin/babun
 
-/bin/cp -rf /usr/local/etc/babun.rc /usr/local/etc/babun.rc.old || echo ""
+/bin/cp -rf /usr/local/etc/babun.rc /usr/local/etc/babun.rc.old 2> /dev/null || echo ""
 /bin/cp -rf $src/babun.rc /usr/local/etc
 source /usr/local/etc/babun.rc
 

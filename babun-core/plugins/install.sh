@@ -16,7 +16,7 @@ bash "$babun_tools/fix_symlinks.sh"
 # install plugins
 plugin_install "core"
 plugin_install "pact"
-#plugin_install "cacert"
+plugin_install "cacert"
 plugin_install "shell"
 plugin_install "oh-my-zsh"
 plugin_install "git"
