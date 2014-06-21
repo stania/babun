@@ -8,7 +8,9 @@ src="$babun/external/oh-my-zsh"
 dest="$babun/home/oh-my-zsh/.oh-my-zsh"
 
 if [ ! -d "$src" ]; then
+	PATH=/usr/bin git config --system http.sslverify false
 	PATH=/usr/bin git clone https://github.com/robbyrussell/oh-my-zsh.git "$src" 
+	PATH=/usr/bin git config --system http.sslverify true
 fi
 
 if [ ! -d "$dest" ]; then
