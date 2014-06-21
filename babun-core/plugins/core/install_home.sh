@@ -8,7 +8,7 @@ src="$babun/home/core"
 dest="$homedir"
 
 if [ ! -f "$dest/.babunrc" ]; then
-	/bin/cp -rf "$src/.babunrc" "$dest/.babunrc"
+	/bin/cp -rf "$src/.babunrc" "$dest/.babunrc" 2> /dev/null
 	branch=$( git --git-dir="$babun/source/.git" --work-tree="$babun/source" rev-parse --abbrev-ref HEAD )
 	if ! [[ "release" == "$branch" ]]; then
 		echo "" >> "$dest/.babunrc"
