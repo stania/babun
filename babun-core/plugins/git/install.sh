@@ -1,5 +1,12 @@
 #!/bin/bash
 set -e -f -o pipefail
+
+echo CYGWIN_VERSION=$CYGWIN_VERSION
+if [ "$CYGWIN_VERSION" == "" ]; then
+	export CYGWIN_VERSION=x86
+fi
+echo CYGWIN_VERSION=$CYGWIN_VERSION
+
 source "/usr/local/etc/babun.instance"
 source "$babun_tools/script.sh"
 
